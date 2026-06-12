@@ -1,4 +1,4 @@
-from gpizero import (
+from gpiozero import (
      PWMOutputDevice, DigitalOutputDevice, DistanceSensor
 )
 from time import sleep
@@ -27,9 +27,9 @@ motor2dir = DigitalOutputDevice(motor2dirpin, initial_value=0)
 distsensor = DistanceSensor(echo=echopin, trigger=triggerpin, max_distance=4.0)
 
 #thresholds 
-distthreshold = 0.1
-luxthresholdsort = 110
-luxthresholdblank = 30
+distthreshold = 0.05
+luxthresholdsort = 60
+luxthresholdblank = 40
 
 def setIntake(dir, speed):
      motor1dir.value = dir
@@ -45,11 +45,13 @@ def checkColor():
           setConveyor(1, 1.0)
           while colorsensor.lux > luxthresholdblank:
                sleep(1)
+          sleep(4) #wait for clothing to be fully deposited into respective laundry net bag
           setConveyor(0, 0)
      else:
           setConveyor(0, 1.0)
           while colorsensor.lux > luxthresholdblank:
                sleep(1)
+          sleep(4) #wait for clothing to be fully deposited into respective laundry net bag
           setConveyor(0, 0)
 
 def checkForClothing():
@@ -57,6 +59,7 @@ def checkForClothing():
           setIntake(1, 1.0)
           while distsensor.distance < distthreshold:
                sleep(1)
+          sleep(4) #wait for clothing to be fully intaked
           setIntake(0, 0)
 
 while True:
